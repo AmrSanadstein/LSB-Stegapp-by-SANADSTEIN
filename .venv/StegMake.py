@@ -142,28 +142,26 @@ class SteganographyApp:
         # Create Excel file
         wb = Workbook()
         ws = wb.active
-        ws.append(["New Name", "Hidden Data"])  # Adjust header, removed "Old Name"
+        ws.append(["Image Name", "Hidden Message"])
 
         images = [f for f in os.listdir(images_path) if f.lower().endswith(('png', 'jpg', 'jpeg'))]
         self.progress['maximum'] = len(images)
 
         for i, image_name in enumerate(images, starting_number):
             image_path = os.path.join(images_path, image_name)
-            new_image_name = f"{i}.jpg"  # Use number as new name, you can adjust extension if needed
+            new_image_name = f"hidden_{i}_{image_name}"
             output_image_path = os.path.join(output_path, new_image_name)
 
             hidden_text = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
             hide_text_in_image(image_path, hidden_text, output_image_path)
 
-            # Log the new name and hidden text
-            ws.append([new_image_name, hidden_text])  # Only store new name and hidden data
+            ws.append([image_name, hidden_text])
             self.log_to_console(f"Processed: {new_image_name}, Hidden Text: {hidden_text}")
             self.progress['value'] = i - starting_number + 1
             self.root.update_idletasks()
 
         wb.save(excel_path)
         messagebox.showinfo("Success", "Processing complete!")
-
 
 # Main
 if __name__ == "__main__":
